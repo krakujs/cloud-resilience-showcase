@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Security Posture Scanner</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .card { border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .high { color: red; }
+        .medium { color: orange; }
+        .low { color: yellow; }
+    </style>
+</head>
+<body>
+    <h1>Security Posture Scanner</h1>
+    
+    <div class="card">
+        <h2>Security Scan Results</h2>
+        <p>Last scan: Today</p>
+        <p>Total vulnerabilities found: 3</p>
+        <ul>
+            <li class="high">HIGH: Privileged container found in namespace: default</li>
+            <li class="medium">MEDIUM: Resource limits not set in deployment: frontend</li>
+            <li class="medium">MEDIUM: Latest tag used in container image: backend</li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <h2>Actions</h2>
+        <button onclick="alert('Scan initiated!')">Start New Scan</button>
+    </div>
+</body>
+</html>

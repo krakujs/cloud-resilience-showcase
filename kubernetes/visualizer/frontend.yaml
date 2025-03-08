@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visualizer-frontend
+  namespace: visualizer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visualizer-frontend
+  template:
+    metadata:
+      labels:
+        app: visualizer-frontend
+    spec:
+      containers:
+      - name: visualizer-frontend
+        image: gcr.io/cloud-simulation-project/visualizer-frontend:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualizer-frontend
+  namespace: visualizer
+spec:
+  selector:
+    app: visualizer-frontend
+  ports:
+  - port: 80
+    targetPort: 80

@@ -1,0 +1,189 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: landing-page
+  namespace: default
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Cloud Resilience Simulator</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f5f5f5;
+        }
+        header {
+          background-color: #333;
+          color: white;
+          padding: 20px;
+          text-align: center;
+        }
+        .container {
+          width: 80%;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        .card {
+          background-color: white;
+          border-radius: 5px;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          margin: 20px 0;
+          padding: 20px;
+          display: flex;
+          align-items: center;
+        }
+        .card-icon {
+          width: 80px;
+          height: 80px;
+          background-color: #f0f0f0;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 20px;
+          font-size: 30px;
+        }
+        .card-content {
+          flex: 1;
+        }
+        .card-content h2 {
+          margin-top: 0;
+        }
+        .btn {
+          display: inline-block;
+          background-color: #4CAF50;
+          color: white;
+          padding: 10px 20px;
+          text-decoration: none;
+          border-radius: 5px;
+          margin-top: 10px;
+        }
+      </style>
+    </head>
+    <body>
+      <header>
+        <h1>Cloud Resilience Simulator</h1>
+        <p>A demonstration of DevOps expertise on Google Cloud Platform</p>
+      </header>
+      
+      <div class="container">
+        <div class="card">
+          <div class="card-icon">🏗️</div>
+          <div class="card-content">
+            <h2>Infrastructure Visualizer</h2>
+            <p>Visualize your GCP infrastructure including networks, compute resources, and Kubernetes objects.</p>
+            <a href="/" class="btn">Access Visualizer</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-icon">🧪</div>
+          <div class="card-content">
+            <h2>Chaos Engineering Module</h2>
+            <p>Test your system's resilience by simulating failures and resource constraints.</p>
+            <a href="/chaos" class="btn">Access Chaos Engineering</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-icon">💰</div>
+          <div class="card-content">
+            <h2>Cost Optimization Analyzer</h2>
+            <p>Monitor and optimize your cloud spending to stay within budget.</p>
+            <a href="/cost" class="btn">Access Cost Analyzer</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <div class="card-content">
+            <h2>Security Posture Scanner</h2>
+            <p>Identify security vulnerabilities and compliance issues in your infrastructure.</p>
+            <a href="/security" class="btn">Access Security Scanner</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <div class="card-content">
+            <h2>Performance Metrics Hub</h2>
+            <p>Monitor the performance of your applications and infrastructure.</p>
+            <a href="/performance" class="btn">Access Performance Hub</a>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: landing-page
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: landing-page
+  template:
+    metadata:
+      labels:
+        app: landing-page
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        volumeMounts:
+        - name: landing-page-content
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+      volumes:
+      - name: landing-page-content
+        configMap:
+          name: landing-page
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: landing-page
+  namespace: default
+spec:
+  selector:
+    app: landing-page
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: landing-page-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /home
+        pathType: Prefix
+        backend:
+          service:
+            name: landing-page
+            port:
+              number: 80

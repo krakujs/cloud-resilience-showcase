@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cost-optimization
+  namespace: cost-optimization
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cost-optimization
+  template:
+    metadata:
+      labels:
+        app: cost-optimization
+    spec:
+      containers:
+      - name: cost-optimization
+        image: python:3.10-slim
+        command: ["/bin/bash", "-c"]
+        args: ["pip install flask && mkdir -p /app/static/css /app/static/js /app/templates && python -m flask run --host=0.0.0.0 --port=5000"]
+        volumeMounts:
+        - name: app-code
+          mountPath: /app/app.py
+          subPath: app.py
+        - name: css-code
+          mountPath: /app/static/css/style.css
+          subPath: style.css
+        - name: js-code
+          mountPath: /app/static/js/dashboard.js
+          subPath: dashboard.js
+        - name: template-code
+          mountPath: /app/templates/index.html
+          subPath: index.html
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 20
+          periodSeconds: 15
+      volumes:
+      - name: app-code
+        configMap:
+          name: cost-optimization-app
+      - name: css-code
+        configMap:
+          name: cost-optimization-css
+      - name: js-code
+        configMap:
+          name: cost-optimization-js
+      - name: template-code
+        configMap:
+          name: cost-optimization-template
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cost-optimization
+  namespace: cost-optimization
+spec:
+  selector:
+    app: cost-optimization
+  ports:
+  - port: 80
+    targetPort: 5000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cost-optimization-ingress
+  namespace: cost-optimization
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /cost
+        pathType: Prefix
+        backend:
+          service:
+            name: cost-optimization
+            port:
+              number: 80

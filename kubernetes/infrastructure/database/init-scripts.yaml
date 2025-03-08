@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: shared
+data:
+  init.sql: |
+    -- Create databases for each microservice
+    CREATE DATABASE visualizer;
+    CREATE DATABASE chaos_engineering;
+    CREATE DATABASE cost_optimization;
+    CREATE DATABASE security;
+    CREATE DATABASE performance;
+    
+    -- Create roles for each service with appropriate permissions
+    CREATE ROLE visualizer_user WITH LOGIN PASSWORD 'visualizer_pass';
+    CREATE ROLE chaos_user WITH LOGIN PASSWORD 'chaos_pass';
+    CREATE ROLE cost_user WITH LOGIN PASSWORD 'cost_pass';
+    CREATE ROLE security_user WITH LOGIN PASSWORD 'security_pass';
+    CREATE ROLE performance_user WITH LOGIN PASSWORD 'performance_pass';
+    
+    -- Grant privileges
+    GRANT ALL PRIVILEGES ON DATABASE visualizer TO visualizer_user;
+    GRANT ALL PRIVILEGES ON DATABASE chaos_engineering TO chaos_user;
+    GRANT ALL PRIVILEGES ON DATABASE cost_optimization TO cost_user;
+    GRANT ALL PRIVILEGES ON DATABASE security TO security_user;
+    GRANT ALL PRIVILEGES ON DATABASE performance TO performance_user;

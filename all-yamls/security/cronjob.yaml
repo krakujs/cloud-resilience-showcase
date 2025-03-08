@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: security-scan-trigger
+  namespace: security
+spec:
+  schedule: "0 */6 * * *"  # Every 6 hours
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: curl
+            image: curlimages/curl:7.87.0
+            command: ["curl", "-X", "POST", "http://security-scanner/api/scan/start"]
+          restartPolicy: OnFailure

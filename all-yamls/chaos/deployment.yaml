@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaos-engineering
+  namespace: chaos-engineering
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chaos-engineering
+  template:
+    metadata:
+      labels:
+        app: chaos-engineering
+    spec:
+      serviceAccountName: chaos-engineering-sa
+      containers:
+      - name: chaos-engineering
+        image: alpine:latest
+        command: ["/bin/sh", "-c"]
+        args: ["apk add --no-cache curl && while true; do echo 'Chaos Engineering service running'; sleep 60; done"]
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chaos-engineering
+  namespace: chaos-engineering
+spec:
+  selector:
+    app: chaos-engineering
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP

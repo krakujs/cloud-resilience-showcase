@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Security Posture Scanner</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Security Posture Scanner</h1>
+    
+    <div class="card">
+      <h2>Summary</h2>
+      <div class="summary">
+        <div class="summary-item">
+          <div class="count" id="total-count">0</div>
+          <div>Total Issues</div>
+        </div>
+        <div class="summary-item">
+          <div class="count severity-high" id="high-count">0</div>
+          <div>High Severity</div>
+        </div>
+        <div class="summary-item">
+          <div class="count severity-medium" id="medium-count">0</div>
+          <div>Medium Severity</div>
+        </div>
+        <div class="summary-item">
+          <div class="count severity-low" id="low-count">0</div>
+          <div>Low Severity</div>
+        </div>
+      </div>
+      <div>
+        <strong>Last Scan:</strong> <span id="last-scan-time">Never</span>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>Vulnerabilities</h2>
+      <table id="vulnerabilities-table">
+        <thead>
+          <tr>
+            <th>Rule</th>
+            <th>Resource</th>
+            <th>Namespace</th>
+            <th>Severity</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody id="vulnerabilities-body">
+          <!-- Vulnerabilities will be loaded here -->
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="actions">
+      <button id="start-scan-btn" class="btn btn-primary">Start New Scan</button>
+      <span id="loading-indicator" class="loading">Scanning...</span>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      loadScanResults();
+      
+      document.getElementById('start-scan-btn').addEventListener('click', function() {
+        startScan();
+      });
+    });
+    
+    function loadScanResults() {
+      fetch('/api/scan')
+        .then(response => response.json())
+        .then(data => {
+          updateSummary(data.summary);
+          updateLastScanTime(data.last_scan_time);
+          updateVulnerabilitiesTable(data.vulnerabilities);
+        })
+        .catch(error => console.error('Error loading scan results:', error));
+    }
+    
+    function updateSummary(summary) {
+      document.getElementById('total-count').textContent = summary.total;
+      document.getElementById('high-count').textContent = summary.by_severity.HIGH;
+      document.getElementById('medium-count').textContent = summary.by_severity.MEDIUM;
+      document.getElementById('low-count').textContent = summary.by_severity.LOW;
+    }
+    
+    function updateLastScanTime(timestamp) {
+      if (timestamp) {
+        const date = new Date(timestamp);
+        document.getElementById('last-scan-time').textContent = date.toLocaleString();
+      }
+    }
+    
+    function updateVulnerabilitiesTable(vulnerabilities) {
+      const tbody = document.getElementById('vulnerabilities-body');
+      tbody.innerHTML = '';
+      
+      if (vulnerabilities.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 5;
+        cell.textContent = 'No vulnerabilities found';
+        cell.style.textAlign = 'center';
+        row.appendChild(cell);
+        tbody.appendChild(row);
+        return;
+      }
+      
+      vulnerabilities.forEach(vuln => {
+        const row = document.createElement('tr');
+        
+        const ruleCell = document.createElement('td');
+        ruleCell.innerHTML = '<strong>' + vuln.rule_name + '</strong><br><small>' + vuln.description + '</small>';
+        row.appendChild(ruleCell);
+        
+        const resourceCell = document.createElement('td');
+        resourceCell.textContent = vuln.resource_type + ': ' + vuln.resource_name;
+        row.appendChild(resourceCell);
+        
+        const namespaceCell = document.createElement('td');
+        namespaceCell.textContent = vuln.namespace;
+        row.appendChild(namespaceCell);
+        
+        const severityCell = document.createElement('td');
+        const severityBadge = document.createElement('span');
+        severityBadge.textContent = vuln.severity;
+        severityBadge.className = 'badge badge-' + vuln.severity.toLowerCase();
+        severityCell.appendChild(severityBadge);
+        row.appendChild(severityCell);
+        
+        const categoryCell = document.createElement('td');
+        categoryCell.textContent = vuln.category;
+        row.appendChild(categoryCell);
+        
+        tbody.appendChild(row);
+      });
+    }
+    
+    function startScan() {
+      const button = document.getElementById('start-scan-btn');
+      const loadingIndicator = document.getElementById('loading-indicator');
+      
+      button.disabled = true;
+      loadingIndicator.style.display = 'inline';
+      
+      fetch('/api/scan/start', {
+        method: 'POST'
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Scan started:', data);
+          // Poll for results
+          pollForResults();
+        })
+        .catch(error => {
+          console.error('Error starting scan:', error);
+          button.disabled = false;
+          loadingIndicator.style.display = 'none';
+        });
+    }
+    
+    function pollForResults() {
+      // Poll every 5 seconds for 2 minutes
+      let attempts = 0;
+      const maxAttempts = 24; // 2 minutes
+      
+      const pollInterval = setInterval(() => {
+        fetch('/api/scan')
+          .then(response => response.json())
+          .then(data => {
+            attempts++;
+            
+            if (!data.last_scan_time || attempts >= maxAttempts) {
+              clearInterval(pollInterval);
+              document.getElementById('start-scan-btn').disabled = false;
+              document.getElementById('loading-indicator').style.display = 'none';
+              loadScanResults();
+              return;
+            }
+            
+            const lastScanTime = new Date(data.last_scan_time);
+            const currentTime = new Date();
+            const timeDiff = currentTime - lastScanTime;
+            
+            // If the scan was completed in the last minute, show results
+            if (timeDiff < 60000) {
+              clearInterval(pollInterval);
+              document.getElementById('start-scan-btn').disabled = false;
+              document.getElementById('loading-indicator').style.display = 'none';
+              loadScanResults();
+            }
+          })
+          .catch(error => {
+            console.error('Error polling for results:', error);
+            attempts++;
+            
+            if (attempts >= maxAttempts) {
+              clearInterval(pollInterval);
+              document.getElementById('start-scan-btn').disabled = false;
+              document.getElementById('loading-indicator').style.display = 'none';
+            }
+          });
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

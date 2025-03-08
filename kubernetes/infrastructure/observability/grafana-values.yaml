@@ -1,0 +1,23 @@
+persistence:
+  enabled: true
+  size: 1Gi
+
+resources:
+  requests:
+    memory: 128Mi
+    cpu: 100m
+  limits:
+    memory: 256Mi
+    cpu: 200m
+
+adminPassword: changeme
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-server.shared.svc.cluster.local
+      access: proxy
+      isDefault: true

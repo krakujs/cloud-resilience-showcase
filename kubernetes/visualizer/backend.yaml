@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visualizer-backend
+  namespace: visualizer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visualizer-backend
+  template:
+    metadata:
+      labels:
+        app: visualizer-backend
+    spec:
+      containers:
+      - name: visualizer-backend
+        image: gcr.io/cloud-simulation-project/visualizer-backend:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: host
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: database
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: port
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualizer-backend
+  namespace: visualizer
+spec:
+  selector:
+    app: visualizer-backend
+  ports:
+  - port: 3000
+    targetPort: 3000

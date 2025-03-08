@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Infrastructure Visualizer</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .node circle { fill: #999; }
+        .node text { font: 12px sans-serif; }
+        .link { fill: none; stroke: #ccc; stroke-width: 2px; }
+    </style>
+</head>
+<body>
+    <h1>Infrastructure Visualizer</h1>
+    <div id="visualization"></div>
+    
+    <script>
+        // Sample data representing GCP resources
+        const data = {
+            name: "GCP Resources",
+            children: [
+                {
+                    name: "Network",
+                    children: [
+                        { name: "crs-network-dev", size: 1000 },
+                        { name: "crs-subnet-dev", size: 800 }
+                    ]
+                },
+                {
+                    name: "Compute",
+                    children: [
+                        { name: "GKE Cluster", size: 2000 },
+                        { name: "Node Pool", size: 1500 }
+                    ]
+                },
+                {
+                    name: "Services",
+                    children: [
+                        { name: "visualizer", size: 500 },
+                        { name: "chaos-engineering", size: 500 },
+                        { name: "cost-optimization", size: 500 },
+                        { name: "security", size: 500 },
+                        { name: "performance", size: 500 }
+                    ]
+                }
+            ]
+        };
+        
+        // Set up the D3 visualization
+        const width = 800;
+        const height = 600;
+        
+        const svg = d3.select("#visualization")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+            
+        const g = svg.append("g")
+            .attr("transform", `translate(${width / 2}, ${height / 2})`);
+            
+        const tree = d3.tree()
+            .size([2 * Math.PI, 250]);
+            
+        const root = d3.hierarchy(data);
+        tree(root);
+        
+        const link = g.selectAll(".link")
+            .data(root.links())
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", d3.linkRadial()
+                .angle(d => d.x)
+                .radius(d => d.y));
+                
+        const node = g.selectAll(".node")
+            .data(root.descendants())
+            .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", d => `translate(${d3.pointRadial(d.x, d.y)})`);
+            
+        node.append("circle")
+            .attr("r", 5)
+            .attr("fill", d => d.children ? "#69b3a2" : "#404080");
+            
+        node.append("text")
+            .attr("dy", "0.31em")
+            .attr("x", d => d.x < Math.PI ? 6 : -6)
+            .attr("text-anchor", d => d.x < Math.PI ? "start" : "end")
+            .attr("transform", d => d.x >= Math.PI ? "rotate(180)" : null)
+            .text(d => d.data.name);
+    </script>
+</body>
+</html>

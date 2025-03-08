@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cost-html
+  namespace: cost-optimization
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Cost Optimization Analyzer</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .card { border: 1px solid #ddd; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .progress { background-color: #f5f5f5; height: 20px; border-radius: 4px; overflow: hidden; }
+        .progress-bar { height: 100%; background-color: #4CAF50; text-align: center; color: white; }
+      </style>
+    </head>
+    <body>
+      <h1>Cost Optimization Analyzer</h1>
+      
+      <div class="card">
+        <h2>Monthly Spending</h2>
+        <p>$145.82 out of $300 credit (48.6%)</p>
+        <div class="progress">
+          <div class="progress-bar" style="width: 48.6%;">48.6%</div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h2>Potential Savings</h2>
+        <ul>
+          <li>Right-size underutilized instances: $45.20/month</li>
+          <li>Use preemptible VMs for batch jobs: $32.80/month</li>
+          <li>Optimize storage usage: $18.90/month</li>
+        </ul>
+      </div>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cost-optimization
+  namespace: cost-optimization
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cost-optimization
+  template:
+    metadata:
+      labels:
+        app: cost-optimization
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        volumeMounts:
+        - name: html-content
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-content
+        configMap:
+          name: cost-html
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cost-optimization
+  namespace: cost-optimization
+spec:
+  selector:
+    app: cost-optimization
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cost-optimization-direct
+  namespace: cost-optimization
+spec:
+  selector:
+    app: cost-optimization
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30081
+  type: NodePort

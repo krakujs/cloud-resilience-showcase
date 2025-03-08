@@ -1,0 +1,32 @@
+# Allow access to the shared database
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-database-access
+  namespace: shared
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: visualizer
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: chaos-engineering
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: cost-optimization
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: security
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: performance
+    ports:
+    - protocol: TCP
+      port: 5432

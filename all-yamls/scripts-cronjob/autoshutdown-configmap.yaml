@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auto-shutdown-scripts
+  namespace: shared
+data:
+  auto-shutdown.sh: |
+    #!/bin/bash
+    # Auto-shutdown script for non-essential services during inactive hours
+
+    # Define namespaces for non-essential services
+    NAMESPACES=("visualizer" "chaos-engineering" "cost-optimization" "security" "performance")
+
+    # Scale down deployments
+    for ns in "${NAMESPACES[@]}"
+    do
+      echo "Scaling down deployments in namespace: $ns"
+      kubectl scale deployment --all --replicas=0 -n $ns
+    done
+
+    echo "Only essential services in shared namespace are kept running"
+    echo "To restart services, run the startup script"
+
+    # Log the shutdown
+    echo "Services scaled down at $(date)" >> /var/log/auto-shutdown.log
+  
+  startup.sh: |
+    #!/bin/bash
+    # Startup script to restore services
+
+    # Define namespaces
+    NAMESPACES=("visualizer" "chaos-engineering" "cost-optimization" "security" "performance")
+
+    # Scale up deployments
+    for ns in "${NAMESPACES[@]}"
+    do
+      echo "Scaling up deployments in namespace: $ns"
+      kubectl scale deployment --all --replicas=1 -n $ns
+    done
+
+    echo "All services have been started"
+
+    # Log the startup
+    echo "Services started at $(date)" >> /var/log/auto-startup.log
+
+    # Schedule shutdown after 8 hours
+    echo "Scheduling shutdown after 8 hours"
+    at now + 8 hours -f $(dirname "$0")/auto-shutdown.sh

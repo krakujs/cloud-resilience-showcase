@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-grafana
+  namespace: shared
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-grafana
+  template:
+    metadata:
+      labels:
+        app: simple-grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:9.5.2
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: shared
+spec:
+  selector:
+    app: simple-grafana
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: ClusterIP

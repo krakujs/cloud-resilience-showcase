@@ -1,0 +1,19 @@
+controller:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 200m
+  service:
+    externalTrafficPolicy: Local
+  config:
+    use-forwarded-headers: "true"
+    compute-full-forwarded-for: "true"
+    use-proxy-protocol: "false"
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: false  # Changed to false since we don't have the Prometheus Operator

@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: auto-shutdown
+  namespace: shared
+spec:
+  schedule: "0 20 * * *"  # Run at 8 PM every day
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: auto-shutdown-sa
+          containers:
+          - name: kubectl
+            image: bitnami/kubectl:latest
+            command: ["/scripts/auto-shutdown.sh"]
+            volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+          volumes:
+          - name: scripts
+            configMap:
+              name: auto-shutdown-scripts
+              defaultMode: 0777
+          restartPolicy: OnFailure
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: auto-shutdown-sa
+  namespace: shared
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: deployment-scaler
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: auto-shutdown-binding
+subjects:
+- kind: ServiceAccount
+  name: auto-shutdown-sa
+  namespace: shared
+roleRef:
+  kind: ClusterRole
+  name: deployment-scaler
+  apiGroup: rbac.authorization.k8s.io

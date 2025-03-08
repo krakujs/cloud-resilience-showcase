@@ -1,0 +1,62 @@
+# Terraform sensitive files
+terraform-sa-key.json
+*-sa-key.json
+*.json.key
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Kubernetes secrets
+*secret*.yaml
+*secret*.yml
+gke-image-puller-key.json
+
+# Environment variables
+.env
+*.env
+
+# Node.js dependencies
+node_modules/
+npm-debug.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/vendor/
+/Godeps/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store

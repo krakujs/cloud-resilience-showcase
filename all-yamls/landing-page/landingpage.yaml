@@ -1,0 +1,1075 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: landing-page
+  namespace: default
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Cloud Resilience Simulator</title>
+      <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+      <style>
+        :root {
+          --primary: #3f51b5;
+          --primary-light: #757de8;
+          --primary-dark: #002984;
+          --secondary: #4caf50;
+          --secondary-light: #80e27e;
+          --secondary-dark: #087f23;
+          --text-on-primary: #ffffff;
+          --text-on-secondary: #000000;
+          --background: #f5f5f5;
+          --card-background: #ffffff;
+          --border-radius: 8px;
+          --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          --transition: all 0.3s ease;
+        }
+        
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        
+        body {
+          font-family: 'Roboto', sans-serif;
+          line-height: 1.6;
+          color: #333;
+          background-color: var(--background);
+        }
+        
+        .container {
+          width: 90%;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        
+        header {
+          background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+          color: var(--text-on-primary);
+          padding: 60px 0 30px;
+          text-align: center;
+          margin-bottom: 40px;
+          box-shadow: var(--shadow);
+        }
+        
+        header .container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        
+        .logo {
+          font-size: 2.5rem;
+          font-weight: 700;
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .logo-icon {
+          margin-right: 10px;
+          font-size: 3rem;
+        }
+        
+        .subtitle {
+          font-size: 1.2rem;
+          font-weight: 300;
+          margin-bottom: 30px;
+          max-width: 800px;
+        }
+        
+        .header-cta {
+          display: inline-block;
+          background-color: var(--secondary);
+          color: var(--text-on-secondary);
+          padding: 12px 24px;
+          border-radius: var(--border-radius);
+          text-decoration: none;
+          font-weight: 500;
+          transition: var(--transition);
+          margin-top: 20px;
+        }
+        
+        .header-cta:hover {
+          background-color: var(--secondary-dark);
+          transform: translateY(-2px);
+        }
+        
+        .project-overview {
+          background-color: var(--card-background);
+          border-radius: var(--border-radius);
+          padding: 30px;
+          margin-bottom: 40px;
+          box-shadow: var(--shadow);
+        }
+        
+        .project-overview h2 {
+          color: var(--primary);
+          margin-bottom: 20px;
+          font-size: 1.8rem;
+          border-bottom: 2px solid var(--primary-light);
+          padding-bottom: 10px;
+        }
+        
+        .project-stats {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          margin: 30px 0;
+        }
+        
+        .stat-item {
+          flex: 1;
+          min-width: 200px;
+          text-align: center;
+          padding: 20px;
+          margin: 10px;
+          background-color: rgba(63, 81, 181, 0.1);
+          border-radius: var(--border-radius);
+        }
+        
+        .stat-number {
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: var(--primary);
+          margin-bottom: 10px;
+        }
+        
+        .stat-label {
+          font-size: 1rem;
+          color: #666;
+        }
+        
+        .architecture-diagram {
+          background-color: var(--card-background);
+          border-radius: var(--border-radius);
+          padding: 30px;
+          margin-bottom: 40px;
+          box-shadow: var(--shadow);
+          text-align: center;
+        }
+        
+        .architecture-diagram h2 {
+          color: var(--primary);
+          margin-bottom: 20px;
+          font-size: 1.8rem;
+          border-bottom: 2px solid var(--primary-light);
+          padding-bottom: 10px;
+        }
+        
+        .architecture-image {
+          width: 100%;
+          max-width: 800px;
+          height: auto;
+          margin: 20px auto;
+          border: 1px solid #ddd;
+          padding: 10px;
+          background-color: #f9f9f9;
+        }
+        
+        .services-section {
+          margin-bottom: 40px;
+        }
+        
+        .services-section h2 {
+          color: var(--primary);
+          margin-bottom: 30px;
+          font-size: 1.8rem;
+          text-align: center;
+        }
+        
+        .services-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 30px;
+        }
+        
+        .service-card {
+          background-color: var(--card-background);
+          border-radius: var(--border-radius);
+          overflow: hidden;
+          box-shadow: var(--shadow);
+          transition: var(--transition);
+        }
+        
+        .service-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-header {
+          background: linear-gradient(135deg, var(--primary-light), var(--primary));
+          color: var(--text-on-primary);
+          padding: 20px;
+          display: flex;
+          align-items: center;
+        }
+        
+        .service-icon {
+          font-size: 2rem;
+          margin-right: 15px;
+          background-color: rgba(255, 255, 255, 0.2);
+          height: 50px;
+          width: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+        }
+        
+        .service-title {
+          font-size: 1.4rem;
+          font-weight: 500;
+        }
+        
+        .service-content {
+          padding: 20px;
+        }
+        
+        .service-content p {
+          margin-bottom: 15px;
+        }
+        
+        .service-details {
+          background-color: #f9f9f9;
+          padding: 15px;
+          border-radius: var(--border-radius);
+          margin-top: 20px;
+        }
+        
+        .service-details h4 {
+          margin-bottom: 10px;
+          color: var(--primary);
+          font-size: 1.1rem;
+        }
+        
+        .tech-stack {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin: 15px 0;
+        }
+        
+        .tech-badge {
+          background-color: #e0e0e0;
+          padding: 5px 10px;
+          border-radius: 15px;
+          font-size: 0.8rem;
+          font-weight: 500;
+        }
+        
+        .deployment-details {
+          font-size: 0.9rem;
+          line-height: 1.6;
+        }
+        
+        .service-cta {
+          display: inline-block;
+          background-color: var(--primary);
+          color: var(--text-on-primary);
+          padding: 10px 20px;
+          border-radius: var(--border-radius);
+          text-decoration: none;
+          font-weight: 500;
+          transition: var(--transition);
+          margin-top: 20px;
+        }
+        
+        .service-cta:hover {
+          background-color: var(--primary-dark);
+        }
+        
+        .implementation-section {
+          background-color: var(--card-background);
+          border-radius: var(--border-radius);
+          padding: 30px;
+          margin-bottom: 40px;
+          box-shadow: var(--shadow);
+        }
+        
+        .implementation-section h2 {
+          color: var(--primary);
+          margin-bottom: 20px;
+          font-size: 1.8rem;
+          border-bottom: 2px solid var(--primary-light);
+          padding-bottom: 10px;
+        }
+        
+        .implementation-phases {
+          margin-top: 20px;
+        }
+        
+        .phase {
+          margin-bottom: 30px;
+        }
+        
+        .phase-header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 15px;
+        }
+        
+        .phase-number {
+          background-color: var(--primary);
+          color: var(--text-on-primary);
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          margin-right: 15px;
+        }
+        
+        .phase-title {
+          font-size: 1.3rem;
+          font-weight: 500;
+          color: var(--primary);
+        }
+        
+        .phase-content {
+          padding-left: 55px;
+        }
+        
+        .phase-content p {
+          margin-bottom: 15px;
+        }
+        
+        .phase-tasks {
+          background-color: #f9f9f9;
+          padding: 15px;
+          border-radius: var(--border-radius);
+        }
+        
+        .task-item {
+          margin-bottom: 10px;
+          padding-left: 20px;
+          position: relative;
+        }
+        
+        .task-item:before {
+          content: "✓";
+          color: var(--secondary);
+          position: absolute;
+          left: 0;
+        }
+        
+        .cost-section {
+          background-color: var(--card-background);
+          border-radius: var(--border-radius);
+          padding: 30px;
+          margin-bottom: 40px;
+          box-shadow: var(--shadow);
+        }
+        
+        .cost-section h2 {
+          color: var(--primary);
+          margin-bottom: 20px;
+          font-size: 1.8rem;
+          border-bottom: 2px solid var(--primary-light);
+          padding-bottom: 10px;
+        }
+        
+        .cost-strategies {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 20px;
+          margin-top: 20px;
+        }
+        
+        .cost-strategy {
+          background-color: #f9f9f9;
+          padding: 20px;
+          border-radius: var(--border-radius);
+        }
+        
+        .cost-strategy h3 {
+          color: var(--primary);
+          margin-bottom: 15px;
+          font-size: 1.2rem;
+        }
+        
+        .cost-breakdown {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+        }
+        
+        .cost-breakdown th, .cost-breakdown td {
+          padding: 12px 15px;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+        }
+        
+        .cost-breakdown th {
+          background-color: var(--primary);
+          color: var(--text-on-primary);
+        }
+        
+        .cost-breakdown tr:hover {
+          background-color: #f5f5f5;
+        }
+        
+        .cost-total {
+          font-weight: 700;
+          color: var(--primary);
+        }
+        
+        footer {
+          background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+          color: var(--text-on-primary);
+          padding: 40px 0;
+          text-align: center;
+          margin-top: 60px;
+        }
+        
+        .footer-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        
+        .developer-info {
+          margin-bottom: 20px;
+        }
+        
+        .developer-name {
+          font-size: 1.4rem;
+          font-weight: 700;
+          margin-bottom: 5px;
+        }
+        
+        .contact-info {
+          font-size: 1rem;
+        }
+        
+        .contact-info a {
+          color: var(--text-on-primary);
+          text-decoration: underline;
+        }
+        
+        .footer-links {
+          margin-top: 20px;
+        }
+        
+        .footer-links a {
+          color: var(--text-on-primary);
+          margin: 0 10px;
+          text-decoration: none;
+          transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+          text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+          .services-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .project-stats {
+            flex-direction: column;
+          }
+          
+          .stat-item {
+            margin: 5px 0;
+          }
+          
+          .service-header {
+            flex-direction: column;
+            text-align: center;
+          }
+          
+          .service-icon {
+            margin-right: 0;
+            margin-bottom: 10px;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <header>
+        <div class="container">
+          <div class="logo">
+            <span class="logo-icon">☁️</span>
+            <span>Cloud Resilience Simulator</span>
+          </div>
+          <p class="subtitle">
+            A comprehensive Kubernetes-based project deployed on Google Cloud Platform that demonstrates cloud infrastructure resilience, chaos engineering principles, cost optimization, security scanning, and performance monitoring in a microservices architecture.
+          </p>
+          <a href="https://github.com/cloud-resilience-simulator" class="header-cta">View Project on GitHub</a>
+        </div>
+      </header>
+      
+      <div class="container">
+        <section class="project-overview">
+          <h2>Project Overview</h2>
+          <p>
+            The Cloud Resilience Simulator is a demonstration project designed to showcase DevOps expertise while optimizing for the $300 GCP credit limit. The project implements a complete microservices architecture with a focus on resilience, security, and cost optimization.
+          </p>
+          
+          <div class="project-stats">
+            <div class="stat-item">
+              <div class="stat-number">5</div>
+              <div class="stat-label">Microservices</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">1</div>
+              <div class="stat-label">GKE Cluster</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">6</div>
+              <div class="stat-label">Namespaces</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">~$100</div>
+              <div class="stat-label">Monthly Cost</div>
+            </div>
+          </div>
+          
+          <p>
+            The simulator is built on a foundation of Infrastructure as Code using Terraform, with all components containerized and orchestrated by Kubernetes. The architecture follows best practices for cloud-native applications, including namespace isolation, network policies, resource quotas, and automated cost management.
+          </p>
+        </section>
+        
+        <section class="architecture-diagram">
+          <h2>Architecture Overview</h2>
+          <div class="architecture-image">
+            <!-- Diagram would be here, but using placeholder text -->
+            <p style="padding: 100px 0; background-color: #f5f5f5; color: #666; font-style: italic;">
+              Cloud Resilience Simulator Architecture Diagram
+              <br>
+              (A detailed diagram showing the GKE cluster, namespaces, and microservices relationships)
+            </p>
+          </div>
+          <p>
+            The architecture consists of a single GKE cluster with multiple namespaces for service isolation. Each microservice operates independently but can communicate through defined network policies. Shared services like the database and monitoring components are hosted in a dedicated namespace.
+          </p>
+        </section>
+        
+        <section class="services-section">
+          <h2>Core Components & Services</h2>
+          
+          <div class="services-grid">
+            <article class="service-card">
+              <div class="service-header">
+                <div class="service-icon">🏗️</div>
+                <h3 class="service-title">Infrastructure Visualizer</h3>
+              </div>
+              <div class="service-content">
+                <p>
+                  An interactive visualization tool that provides a graphical representation of your GCP infrastructure, including networks, compute resources, and Kubernetes objects.
+                </p>
+                
+                <div class="service-details">
+                  <h4>Technology Stack</h4>
+                  <div class="tech-stack">
+                    <span class="tech-badge">React</span>
+                    <span class="tech-badge">D3.js</span>
+                    <span class="tech-badge">Node.js</span>
+                    <span class="tech-badge">Express</span>
+                    <span class="tech-badge">GCP APIs</span>
+                  </div>
+                  
+                  <h4>Deployment Details</h4>
+                  <div class="deployment-details">
+                    <p>Deployed in the <strong>visualizer</strong> namespace with frontend and backend components separated. The frontend is served by Nginx and the backend provides RESTful APIs to fetch infrastructure data.</p>
+                    <p>Resource requests: 128Mi memory, 100m CPU<br>Resource limits: 256Mi memory, 200m CPU</p>
+                  </div>
+                </div>
+                
+                <a href="http://34.163.158.43/" class="service-cta">Access Visualizer</a>
+              </div>
+            </article>
+            
+            <article class="service-card">
+              <div class="service-header">
+                <div class="service-icon">🧪</div>
+                <h3 class="service-title">Chaos Engineering Module</h3>
+              </div>
+              <div class="service-content">
+                <p>
+                  A tool for testing system resilience by simulating various failure scenarios, resource constraints, and network disruptions in a controlled environment.
+                </p>
+                
+                <div class="service-details">
+                  <h4>Technology Stack</h4>
+                  <div class="tech-stack">
+                    <span class="tech-badge">Go</span>
+                    <span class="tech-badge">Chaos Toolkit</span>
+                    <span class="tech-badge">Kubernetes API</span>
+                  </div>
+                  
+                  <h4>Deployment Details</h4>
+                  <div class="deployment-details">
+                    <p>Deployed in the <strong>chaos-engineering</strong> namespace with appropriate RBAC permissions to manipulate pods, deployments, and network policies. It operates with a dedicated service account that has carefully scoped permissions.</p>
+                    <p>Resource requests: 128Mi memory, 100m CPU<br>Resource limits: 256Mi memory, 200m CPU</p>
+                  </div>
+                </div>
+                
+                <a href="http://34.163.158.43:8080/chaos" class="service-cta">Access Chaos Engineering</a>
+              </div>
+            </article>
+            
+            <article class="service-card">
+              <div class="service-header">
+                <div class="service-icon">💰</div>
+                <h3 class="service-title">Cost Optimization Analyzer</h3>
+              </div>
+              <div class="service-content">
+                <p>
+                  A dashboard for monitoring and optimizing cloud spending, providing insights into resource utilization, cost projections, and recommendations for savings.
+                </p>
+                
+                <div class="service-details">
+                  <h4>Technology Stack</h4>
+                  <div class="tech-stack">
+                    <span class="tech-badge">Python</span>
+                    <span class="tech-badge">Flask</span>
+                    <span class="tech-badge">Bootstrap</span>
+                    <span class="tech-badge">GCP Billing API</span>
+                  </div>
+                  
+                  <h4>Deployment Details</h4>
+                  <div class="deployment-details">
+                    <p>Deployed in the <strong>cost-optimization</strong> namespace as a Flask application with ConfigMaps for HTML, CSS, and JavaScript. It integrates with the GCP Billing API to fetch real-time cost data and generates recommendations based on resource usage patterns.</p>
+                    <p>Resource requests: 128Mi memory, 100m CPU<br>Resource limits: 256Mi memory, 200m CPU</p>
+                  </div>
+                </div>
+                
+                <a href="http://34.163.158.43:30081/" class="service-cta">Access Cost Analyzer</a>
+              </div>
+            </article>
+            
+            <article class="service-card">
+              <div class="service-header">
+                <div class="service-icon">🔒</div>
+                <h3 class="service-title">Security Posture Scanner</h3>
+              </div>
+              <div class="service-content">
+                <p>
+                  A security tool that identifies vulnerabilities and compliance issues in your infrastructure, focusing on container security, Kubernetes configurations, and network policies.
+                </p>
+                
+                <div class="service-details">
+                  <h4>Technology Stack</h4>
+                  <div class="tech-stack">
+                    <span class="tech-badge">Python</span>
+                    <span class="tech-badge">Kubernetes API</span>
+                    <span class="tech-badge">YAML</span>
+                    <span class="tech-badge">Security Rules</span>
+                  </div>
+                  
+                  <h4>Deployment Details</h4>
+                  <div class="deployment-details">
+                    <p>Deployed in the <strong>security</strong> namespace with a dedicated service account that has read-only access to cluster resources. It runs regular scans using predefined security rules and generates reports on vulnerabilities and compliance issues.</p>
+                    <p>Resource requests: 128Mi memory, 100m CPU<br>Resource limits: 256Mi memory, 200m CPU</p>
+                    <p>Scheduled scans run every 6 hours via a Kubernetes CronJob.</p>
+                  </div>
+                </div>
+                
+                <a href="http://34.163.158.43:30082/" class="service-cta">Access Security Scanner</a>
+              </div>
+            </article>
+            
+            <article class="service-card">
+              <div class="service-header">
+                <div class="service-icon">📊</div>
+                <h3 class="service-title">Performance Metrics Hub</h3>
+              </div>
+              <div class="service-content">
+                <p>
+                  A monitoring dashboard that provides real-time metrics on system performance, resource utilization, and application health, with load testing capabilities.
+                </p>
+                
+                <div class="service-details">
+                  <h4>Technology Stack</h4>
+                  <div class="tech-stack">
+                    <span class="tech-badge">Node.js</span>
+                    <span class="tech-badge">Vue.js</span>
+                    <span class="tech-badge">Chart.js</span>
+                    <span class="tech-badge">Prometheus</span>
+                  </div>
+                  
+                  <h4>Deployment Details</h4>
+                  <div class="deployment-details">
+                    <p>Deployed in the <strong>performance</strong> namespace with frontend and backend components. The frontend uses Vue.js and Chart.js for visualization, while the backend integrates with Prometheus for metrics collection. It also includes a load test controller for performance testing.</p>
+                    <p>Resource requests: 128Mi memory, 100m CPU<br>Resource limits: 256Mi memory, 200m CPU</p>
+                  </div>
+                </div>
+                
+                <a href="http://34.163.158.43/performance" class="service-cta">Access Performance Hub</a>
+              </div>
+            </article>
+            
+            <article class="service-card">
+              <div class="service-header">
+                <div class="service-icon">🗄️</div>
+                <h3 class="service-title">Shared Infrastructure</h3>
+              </div>
+              <div class="service-content">
+                <p>
+                  Core infrastructure components shared across microservices, including database, monitoring stack, and ingress controller.
+                </p>
+                
+                <div class="service-details">
+                  <h4>Components</h4>
+                  <div class="tech-stack">
+                    <span class="tech-badge">PostgreSQL</span>
+                    <span class="tech-badge">Prometheus</span>
+                    <span class="tech-badge">Grafana</span>
+                    <span class="tech-badge">NGINX Ingress</span>
+                  </div>
+                  
+                  <h4>Deployment Details</h4>
+                  <div class="deployment-details">
+                    <p>Deployed in the <strong>shared</strong> namespace. PostgreSQL is deployed as a StatefulSet with 1Gi persistent storage. Prometheus and Grafana form the monitoring stack with retention configured for cost optimization. NGINX Ingress Controller provides the entry point for external traffic.</p>
+                    <p>Database resources: 256Mi-512Mi memory, 200m-500m CPU<br>Monitoring resources: 256Mi-512Mi memory, 100m-200m CPU</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+        
+        <section class="tech-stack-section" style="background-color: var(--card-background); border-radius: var(--border-radius); padding: 30px; margin-bottom: 40px; box-shadow: var(--shadow);">
+          <h2 style="color: var(--primary); margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 10px;">Technology Stack</h2>
+          
+          <p>The Cloud Resilience Simulator is built using a modern cloud-native technology stack that emphasizes scalability, resilience, and cost-efficiency:</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 25px;">
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: var(--border-radius);">
+              <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.3rem;">Infrastructure</h3>
+              <div class="task-item">Google Kubernetes Engine (GKE)</div>
+              <div class="task-item">Terraform for IaC</div>
+              <div class="task-item">Virtual Private Cloud (VPC)</div>
+              <div class="task-item">Cloud NAT for outbound traffic</div>
+              <div class="task-item">Service accounts with least privilege</div>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: var(--border-radius);">
+              <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.3rem;">Frontend Technologies</h3>
+              <div class="task-item">React with Hooks</div>
+              <div class="task-item">Vue.js with Composition API</div>
+              <div class="task-item">D3.js for visualizations</div>
+              <div class="task-item">Chart.js for metrics</div>
+              <div class="task-item">Bootstrap for responsive design</div>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: var(--border-radius);">
+              <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.3rem;">Backend Technologies</h3>
+              <div class="task-item">Node.js with Express</div>
+              <div class="task-item">Python with Flask</div>
+              <div class="task-item">Go for performance-critical services</div>
+              <div class="task-item">PostgreSQL database</div>
+              <div class="task-item">RESTful APIs with OpenAPI specs</div>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: var(--border-radius);">
+              <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.3rem;">DevOps & Observability</h3>
+              <div class="task-item">Kubernetes with namespaces</div>
+              <div class="task-item">NGINX Ingress Controller</div>
+              <div class="task-item">Prometheus for metrics</div>
+              <div class="task-item">Grafana for dashboards</div>
+              <div class="task-item">ArgoCD for GitOps deployments</div>
+            </div>
+          </div>
+        </section>
+        
+        <section class="implementation-section">
+          <h2>Implementation Approach</h2>
+          <p>
+            The Cloud Resilience Simulator was implemented following a phased approach, with careful consideration for cost optimization, security, and best practices for cloud-native applications.
+          </p>
+          
+          <div class="implementation-phases">
+            <div class="phase">
+              <div class="phase-header">
+                <div class="phase-number">1</div>
+                <div class="phase-title">Infrastructure Foundation</div>
+              </div>
+              <div class="phase-content">
+                <p>
+                  Established the core infrastructure components using Terraform to create a solid foundation for the project.
+                </p>
+                <div class="phase-tasks">
+                  <div class="task-item">GCP project setup with required APIs enabled</div>
+                  <div class="task-item">Terraform configuration with GCS remote state</div>
+                  <div class="task-item">VPC network with subnets and firewall rules</div>
+                  <div class="task-item">GKE cluster with preemptible e2-small nodes</div>
+                  <div class="task-item">Budget alerts configured at key thresholds</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="phase">
+              <div class="phase-header">
+                <div class="phase-number">2</div>
+                <div class="phase-title">Core Infrastructure</div>
+              </div>
+              <div class="phase-content">
+                <p>
+                  Deployed shared infrastructure components that provide common functionality across microservices.
+                </p>
+                <div class="phase-tasks">
+                  <div class="task-item">Kubernetes namespace structure with resource quotas</div>
+                  <div class="task-item">PostgreSQL database deployed as StatefulSet</div>
+                  <div class="task-item">NGINX Ingress Controller for external access</div>
+                  <div class="task-item">Network policies for security isolation</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="phase">
+              <div class="phase-header">
+                <div class="phase-number">3</div>
+                <div class="phase-title">Microservice Development</div>
+              </div>
+              <div class="phase-content">
+                <p>
+                  Built and deployed the individual microservices that form the core functionality of the simulator.
+                </p>
+                <div class="phase-tasks">
+                  <div class="task-item">Infrastructure Visualizer with React frontend and Node.js backend</div>
+                  <div class="task-item">Chaos Engineering Module with Go and Kubernetes API integration</div>
+                  <div class="task-item">Cost Optimization Analyzer with Python Flask</div>
+                  <div class="task-item">Security Posture Scanner with scheduled scans</div>
+                  <div class="task-item">Performance Metrics Hub with Vue.js and Node.js</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="phase">
+              <div class="phase-header">
+                <div class="phase-number">4</div>
+                <div class="phase-title">Integration and Optimization</div>
+              </div>
+              <div class="phase-content">
+                <p>
+                  Integrated the components and implemented optimization strategies to ensure efficiency and cost-effectiveness.
+                </p>
+                <div class="phase-tasks">
+                  <div class="task-item">Cross-service API integration for cohesive experience</div>
+                  <div class="task-item">Resource optimization for all deployments</div>
+                  <div class="task-item">Auto-shutdown mechanisms for non-essential services</div>
+                  <div class="task-item">Security hardening with network policies</div>
+                  <div class="task-item">Landing page development for unified access</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <section class="cost-section">
+          <h2>Cost Management Strategy</h2>
+          <p>
+            The project is optimized to operate within the $300 GCP credit limit through careful resource allocation and cost-saving strategies.
+          </p>
+          
+          <div class="cost-strategies">
+            <div class="cost-strategy">
+              <h3>Compute Optimization</h3>
+              <div class="task-item">Using preemptible e2-small instances for nodes</div>
+              <div class="task-item">Strict resource limits on all deployments</div>
+              <div class="task-item">Auto-scaling with tight constraints</div>
+              <div class="task-item">Daily shutdown of non-essential services</div>
+            </div>
+
+            <div class="cost-strategy">
+              <h3>Storage Optimization</h3>
+              <div class="task-item">Minimal persistent volumes (1Gi for database)</div>
+              <div class="task-item">Short retention period for logs and metrics</div>
+              <div class="task-item">Efficient container images</div>
+              <div class="task-item">Regular cleanup of unused resources</div>
+            </div>
+
+            <div class="cost-strategy">
+              <h3>Network Optimization</h3>
+              <div class="task-item">Single region deployment</div>
+              <div class="task-item">Shared ingress controller</div>
+              <div class="task-item">Minimized external traffic</div>
+              <div class="task-item">Efficient internal communication</div>
+            </div>
+          </div>
+          
+          <table class="cost-breakdown">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Monthly Cost</th>
+                <th>Optimization Strategy</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>GKE Cluster (3 e2-small preemptible nodes)</td>
+                <td>~$60</td>
+                <td>Preemptible instances, auto-shutdown</td>
+              </tr>
+              <tr>
+                <td>Persistent Storage (10GB)</td>
+                <td>~$2</td>
+                <td>Minimal volume size, efficient data storage</td>
+              </tr>
+              <tr>
+                <td>Load Balancer</td>
+                <td>~$18</td>
+                <td>Single shared ingress controller</td>
+              </tr>
+              <tr>
+                <td>Network Traffic</td>
+                <td>~$10</td>
+                <td>Minimized external traffic, efficient communication</td>
+              </tr>
+              <tr>
+                <td>Other Services</td>
+                <td>~$10</td>
+                <td>Resource optimization, scheduled operations</td>
+              </tr>
+              <tr class="cost-total">
+                <td>Total Estimated Monthly Cost</td>
+                <td>~$100</td>
+                <td>Well within the $300 GCP credit limit</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      <section class="container" style="margin-bottom: 40px;">
+        <div style="background-color: var(--card-background); border-radius: var(--border-radius); padding: 30px; box-shadow: var(--shadow);">
+          <h2 style="color: var(--primary); margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 10px;">Security Implementation</h2>
+          
+          <p>Security is a critical aspect of the Cloud Resilience Simulator, implemented through multiple layers of protection:</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: var(--border-radius);">
+              <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.2rem;">Network Security</h3>
+              <div class="task-item">Default deny-all network policies</div>
+              <div class="task-item">Namespace isolation</div>
+              <div class="task-item">Strict ingress rules</div>
+              <div class="task-item">Private GKE cluster configuration</div>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: var(--border-radius);">
+              <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.2rem;">Authentication & Authorization</h3>
+              <div class="task-item">Service accounts with least privilege</div>
+              <div class="task-item">RBAC for Kubernetes resources</div>
+              <div class="task-item">Secure management of secrets</div>
+              <div class="task-item">Regular credential rotation</div>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: var(--border-radius);">
+              <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.2rem;">Container Security</h3>
+              <div class="task-item">Regular vulnerability scanning</div>
+              <div class="task-item">Minimal base images</div>
+              <div class="task-item">No privileged containers</div>
+              <div class="task-item">Read-only file systems where possible</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="container" style="margin-bottom: 40px;">
+        <div style="background-color: var(--card-background); border-radius: var(--border-radius); padding: 30px; box-shadow: var(--shadow);">
+          <h2 style="color: var(--primary); margin-bottom: 20px; font-size: 1.8rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 10px;">Future Enhancements</h2>
+          
+          <p>The Cloud Resilience Simulator is designed to be extensible. Planned future enhancements include:</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: var(--border-radius);">
+              <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.2rem;">Multi-Cloud Support</h3>
+              <p>Extending the simulator to work across multiple cloud providers (AWS, Azure) for demonstrating hybrid and multi-cloud resilience patterns.</p>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: var(--border-radius);">
+              <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.2rem;">Advanced Chaos Scenarios</h3>
+              <p>Implementing more complex chaos scenarios such as region failures, DNS disruptions, and data corruption events to test more sophisticated resilience patterns.</p>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: var(--border-radius);">
+              <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.2rem;">Machine Learning Integration</h3>
+              <p>Adding predictive analytics for cost forecasting and anomaly detection for security and performance monitoring using machine learning algorithms.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <footer>
+        <div class="container footer-content">
+          <div class="developer-info">
+            <div class="developer-name">Developed by Ujjwal Solanki</div>
+            <div class="contact-info">
+              Contact: <a href="mailto:ujjwalsolanki2001@gmail.com">ujjwalsolanki2001@gmail.com</a>
+            </div>
+          </div>
+          
+          <div class="footer-links">
+            <a href="https://github.com/cloud-resilience-simulator">GitHub</a>
+            <a href="#">Documentation</a>
+            <a href="#">About</a>
+          </div>
+          
+          <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
+            &copy; 2025 Cloud Resilience Simulator - A demonstration project built with Kubernetes on Google Cloud Platform.
+          </p>
+        </div>
+      </footer>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: landing-page
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: landing-page
+  template:
+    metadata:
+      labels:
+        app: landing-page
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        volumeMounts:
+        - name: landing-page-content
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: landing-page-content
+        configMap:
+          name: landing-page
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: landing-page
+  namespace: default
+spec:
+  selector:
+    app: landing-page
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP

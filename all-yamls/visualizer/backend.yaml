@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visualizer-backend
+  namespace: visualizer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visualizer-backend
+  template:
+    metadata:
+      labels:
+        app: visualizer-backend
+    spec:
+      containers:
+      - name: visualizer-backend
+        image: node:18-alpine
+        command: ["/bin/sh", "-c"]
+        args: ["mkdir -p /app && cd /app && npm init -y && npm install express cors morgan && echo 'const express = require(\"express\"); const app = express(); app.get(\"/\", (req, res) => res.json({message: \"Visualizer Backend API\"})); app.get(\"/health\", (req, res) => res.json({status: \"ok\"})); app.get(\"/api/resources\", (req, res) => res.json({resources: [{name: \"GKE Cluster\", type: \"container\"}, {name: \"VPC Network\", type: \"network\"}]})); app.listen(3000, () => console.log(\"Server running\"));' > /app/server.js && node /app/server.js"]
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualizer-backend
+  namespace: visualizer
+spec:
+  selector:
+    app: visualizer-backend
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: ClusterIP

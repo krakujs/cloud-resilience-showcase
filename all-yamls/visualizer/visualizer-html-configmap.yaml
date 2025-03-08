@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: visualizer-html
+  namespace: visualizer
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Infrastructure Visualizer</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #333; }
+            .box { border: 1px solid #ddd; padding: 20px; margin: 10px; display: inline-block; width: 200px; }
+            .resource { background-color: #f5f5f5; padding: 10px; margin: 5px; }
+        </style>
+    </head>
+    <body>
+        <h1>Infrastructure Visualizer</h1>
+        <div>
+            <div class="box">
+                <h3>Network Resources</h3>
+                <div class="resource">VPC: crs-network-dev</div>
+                <div class="resource">Subnet: crs-subnet-dev</div>
+                <div class="resource">Firewall: allow-internal</div>
+            </div>
+            <div class="box">
+                <h3>Compute Resources</h3>
+                <div class="resource">GKE Cluster: crs-cluster-dev</div>
+                <div class="resource">Node Pool: crs-node-pool</div>
+                <div class="resource">Nodes: 2 e2-small (preemptible)</div>
+            </div>
+            <div class="box">
+                <h3>Services</h3>
+                <div class="resource">visualizer</div>
+                <div class="resource">chaos-engineering</div>
+                <div class="resource">cost-optimization</div>
+                <div class="resource">security</div>
+                <div class="resource">performance</div>
+            </div>
+        </div>
+    </body>
+    </html>
